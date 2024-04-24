@@ -1,5 +1,5 @@
 using It4see.Domain;
-using It4see.Persistence.RepositoriesBase;
+using It4see.Persistence.Base;
 
 using Microsoft.AspNetCore.Mvc;
 

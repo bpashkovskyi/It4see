@@ -1,6 +1,6 @@
 ﻿using It4see.Domain;
 
-namespace It4see.Persistence.RepositoriesBase;
+namespace It4see.Persistence.Base;
 
 public interface ICategoryRepository
 {

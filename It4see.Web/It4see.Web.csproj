@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\It4see.Domain\It4see.Domain.csproj" />
+    <ProjectReference Include="..\It4see.Persistence.Base\It4see.Persistence.Base.csproj" />
     <ProjectReference Include="..\It4see.Persistence\It4see.Persistence.csproj" />
   </ItemGroup>
 

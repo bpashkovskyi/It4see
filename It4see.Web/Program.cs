@@ -1,6 +1,6 @@
 
 using It4see.Persistence;
-using It4see.Persistence.RepositoriesBase;
+using It4see.Persistence.Base;
 using It4see.Web.Mapping;
 
 using Microsoft.EntityFrameworkCore;
