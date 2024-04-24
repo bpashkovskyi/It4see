@@ -1,0 +1,6 @@
+@It4see.Web_HostAddress = http://localhost:5082
+
+GET {{It4see.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
