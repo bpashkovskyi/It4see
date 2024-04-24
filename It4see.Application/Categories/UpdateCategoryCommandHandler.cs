@@ -3,7 +3,7 @@ using It4see.Persistence.Base;
 
 using MediatR;
 
-namespace It4see.Application;
+namespace It4see.Application.Categories;
 
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand>
 {
@@ -22,6 +22,6 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
             Title = request.Title
         };
 
-        await this.categoryRepository.UpdateAsync(category);
+        await categoryRepository.UpdateAsync(category);
     }
 }

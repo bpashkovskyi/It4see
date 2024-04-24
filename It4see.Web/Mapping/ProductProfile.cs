@@ -9,13 +9,13 @@ public class ProductProfile : Profile
 {
     public ProductProfile()
     {
-        this.CreateMap<CreateProductViewModel, Product>();
-        this.CreateMap<UpdateProductViewModel, Product>();
+        CreateMap<CreateProductViewModel, Product>();
+        CreateMap<UpdateProductViewModel, Product>();
 
-        this.CreateMap<Product, ProductListViewModel>()
+        CreateMap<Product, ProductListViewModel>()
             .ForMember(productListViewModel => productListViewModel.CategoryName, option => option.MapFrom(product => product.Category.Title));
 
-        this.CreateMap<Product, ProductDetailsViewModel>()
+        CreateMap<Product, ProductDetailsViewModel>()
             .ForMember(productListViewModel => productListViewModel.CategoryName, option => option.MapFrom(product => product.Category.Title));
     }
 }

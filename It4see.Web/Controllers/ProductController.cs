@@ -1,11 +1,13 @@
 using AutoMapper;
 
+using It4see.Application.Categories;
+using It4see.Application.Products;
 using It4see.Domain;
-using It4see.Persistence;
 using It4see.Web.ViewModels.Product;
 
+using MediatR;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace It4see.Web.Controllers;
 
@@ -13,23 +15,21 @@ namespace It4see.Web.Controllers;
 [Route("[controller]")]
 public class ProductController : ControllerBase
 {
-    private readonly ShopDatabaseContext dbContext;
+    private readonly IMediator mediator;
     private readonly IMapper mapper;
 
-    public ProductController(ShopDatabaseContext dbContext, IMapper mapper)
+    public ProductController(IMediator mediator, IMapper mapper)
     {
-        this.dbContext = dbContext;
+        this.mediator = mediator;
         this.mapper = mapper;
     }
 
     [HttpGet("list")]
     public async Task<IActionResult> Get()
     {
-        var products = await dbContext.Products
-            .Include(product => product.Category)
-            .ToListAsync();
+        var categories = await mediator.Send(new GetAllCategoriesQuery());
 
-        var productListViewModels = this.mapper.Map<List<ProductListViewModel>>(products);
+        var productListViewModels = mapper.Map<List<ProductListViewModel>>(categories);
 
         return Ok(productListViewModels);
     }
@@ -37,62 +37,50 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetById(int id)
     {
-        var product = await dbContext.Products
-            .Include(product => product.Category)
-            .FirstOrDefaultAsync(product => product.Id == id);
-
+        var product = await this.mediator.Send(new GetProductQuery { Id = id });
         if (product == null)
         {
             return NotFound();
         }
 
-        var productDetailsViewModel = this.mapper.Map<ProductDetailsViewModel>(product);
-
-        return Ok(productDetailsViewModel);
+        return Ok(product);
     }
 
     [HttpGet("byTitle")]
     public async Task<IActionResult> GetByTitle(string title)
     {
-        var product = await dbContext.Products
-            .Include(product => product.Category)
-            .FirstOrDefaultAsync(product => product.Title == title);
-
+        var product = await this.mediator.Send(new GetProductByTitleQuery { Title = title });
         if (product == null)
         {
             return NotFound();
         }
 
-        var productDetailsViewModel = this.mapper.Map<ProductDetailsViewModel>(product);
-
-        return Ok(productDetailsViewModel);
+        return Ok(product);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(CreateProductViewModel createProductViewModel)
+    public async Task<IActionResult> Post(Product product)
     {
-        var product = this.mapper.Map<Product>(createProductViewModel);
+        var createProductCommand = new CreateProductCommand
+        {
+            Title = product.Title
+        };
 
-        await dbContext.Products.AddAsync(product);
-        await dbContext.SaveChangesAsync();
+        await mediator.Send(createProductCommand);
 
-        return Created("test", product.Id);
+        return Ok(product);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(UpdateProductViewModel updateProductViewModel)
+    public async Task<IActionResult> Put(Product product)
     {
-        var product = await dbContext.Products.FindAsync(updateProductViewModel.Id);
-        if (product == null)
+        var updateProductCommand = new UpdateProductCommand()
         {
-            return NotFound();
-        }
+            Id = product.Id,
+            Title = product.Title
+        };
 
-        product.Title = updateProductViewModel.Title;
-        product.Price = updateProductViewModel.Price;
-        product.CategoryId = updateProductViewModel.CategoryId;
-
-        await dbContext.SaveChangesAsync();
+        await mediator.Send(updateProductCommand);
 
         return Ok(product);
     }
@@ -100,15 +88,7 @@ public class ProductController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
-        var product = await dbContext.Products.FindAsync(id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        dbContext.Remove(product);
-
-        await dbContext.SaveChangesAsync();
+        await mediator.Send(new DeleteProductCommand { Id = id });
 
         return NoContent();
     }

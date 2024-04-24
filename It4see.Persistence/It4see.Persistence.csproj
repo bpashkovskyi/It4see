@@ -15,8 +15,4 @@
     <ProjectReference Include="..\It4see.Persistence.Base\It4see.Persistence.Base.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RepositoriesBase\" />
-  </ItemGroup>
-
 </Project>

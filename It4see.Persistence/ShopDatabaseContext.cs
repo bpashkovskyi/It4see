@@ -8,7 +8,7 @@ public class ShopDatabaseContext : DbContext
 {
     public ShopDatabaseContext(DbContextOptions<ShopDatabaseContext> options) : base(options)
     {
-        this.Database.EnsureCreated();
+        Database.EnsureCreated();
     }
 
     public DbSet<Category> Categories { get; set; }

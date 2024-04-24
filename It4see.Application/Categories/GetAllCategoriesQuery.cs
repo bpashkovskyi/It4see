@@ -2,7 +2,7 @@
 
 using MediatR;
 
-namespace It4see.Application;
+namespace It4see.Application.Categories;
 
 public class GetAllCategoriesQuery : IRequest<List<Category>>
 {
