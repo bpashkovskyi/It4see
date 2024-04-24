@@ -1,6 +1,7 @@
 using It4see.Application.Categories;
 using It4see.Persistence;
 using It4see.Persistence.Base;
+using It4see.Persistence.Repositories;
 using It4see.Web.Mapping;
 
 using Microsoft.AspNetCore.Hosting;
@@ -28,7 +29,8 @@ public class Program
         builder.Services.AddDbContext<ShopDatabaseContext>(options => options.UseSqlServer(
             builder.Configuration.GetConnectionString("ShopDatabase")));
 
-        builder.Services.AddScoped<ICategoryRepository, ICategoryRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 
         var app = builder.Build();

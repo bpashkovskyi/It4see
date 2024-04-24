@@ -74,7 +74,7 @@ public class ProductController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put(Product product)
     {
-        var updateProductCommand = new UpdateProductCommand()
+        var updateProductCommand = new UpdateProductCommand
         {
             Id = product.Id,
             Title = product.Title

@@ -1,9 +1,8 @@
 using AutoMapper;
 
 using It4see.Application.Categories;
-using It4see.Application.Products;
 using It4see.Domain;
-using It4see.Web.ViewModels.Product;
+using It4see.Web.ViewModels.Category;
 
 using MediatR;
 
@@ -29,7 +28,7 @@ public class CategoryController : ControllerBase
     {
         var categories = await mediator.Send(new GetAllCategoriesQuery());
 
-        var categoryListViewModels = mapper.Map<List<ProductListViewModel>>(categories);
+        var categoryListViewModels = mapper.Map<List<CategoryListViewModel>>(categories);
 
         return Ok(categoryListViewModels);
     }
@@ -37,7 +36,7 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetById(int id)
     {
-        var category = await this.mediator.Send(new GetProductQuery { Id = id });
+        var category = await this.mediator.Send(new GetCategoryQuery { Id = id });
         if (category == null)
         {
             return NotFound();
@@ -49,7 +48,7 @@ public class CategoryController : ControllerBase
     [HttpGet("byTitle")]
     public async Task<IActionResult> GetByTitle(string title)
     {
-        var category = await this.mediator.Send(new GetProductByTitleQuery { Title = title });
+        var category = await this.mediator.Send(new GetCategoryByTitleQuery { Title = title });
         if (category == null)
         {
             return NotFound();
@@ -59,28 +58,28 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Product category)
+    public async Task<IActionResult> Post(Category category)
     {
-        var createProductCommand = new CreateProductCommand
+        var createCategoryCommand = new CreateCategoryCommand
         {
             Title = category.Title
         };
 
-        await mediator.Send(createProductCommand);
+        await mediator.Send(createCategoryCommand);
 
         return Ok(category);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(Product category)
+    public async Task<IActionResult> Put(Category category)
     {
-        var updateProductCommand = new UpdateProductCommand()
+        var updateCategoryCommand = new UpdateCategoryCommand
         {
             Id = category.Id,
             Title = category.Title
         };
 
-        await mediator.Send(updateProductCommand);
+        await mediator.Send(updateCategoryCommand);
 
         return Ok(category);
     }
@@ -88,7 +87,7 @@ public class CategoryController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
-        await mediator.Send(new DeleteProductCommand { Id = id });
+        await mediator.Send(new DeleteCategoryCommand { Id = id });
 
         return NoContent();
     }
