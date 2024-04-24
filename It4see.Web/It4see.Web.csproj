@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\It4see.Application\It4see.Application.csproj" />
     <ProjectReference Include="..\It4see.Domain\It4see.Domain.csproj" />
     <ProjectReference Include="..\It4see.Persistence.Base\It4see.Persistence.Base.csproj" />
     <ProjectReference Include="..\It4see.Persistence\It4see.Persistence.csproj" />

@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "It4see.Domain", "It4see.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "It4see.Persistence.Base", "It4see.Persistence.Base\It4see.Persistence.Base.csproj", "{AD89DD23-6A26-407F-AB36-09D6EF43DBCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "It4see.Application", "It4see.Application\It4see.Application.csproj", "{50B940CD-99D8-4E8F-8970-0D2D5C51725C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AD89DD23-6A26-407F-AB36-09D6EF43DBCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD89DD23-6A26-407F-AB36-09D6EF43DBCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD89DD23-6A26-407F-AB36-09D6EF43DBCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50B940CD-99D8-4E8F-8970-0D2D5C51725C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50B940CD-99D8-4E8F-8970-0D2D5C51725C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50B940CD-99D8-4E8F-8970-0D2D5C51725C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50B940CD-99D8-4E8F-8970-0D2D5C51725C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

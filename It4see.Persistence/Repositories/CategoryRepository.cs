@@ -2,63 +2,62 @@
 using It4see.Persistence.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace It4see.Persistence.Repositories
+namespace It4see.Persistence.Repositories;
+
+public class CategoryRepository : ICategoryRepository
 {
-    public class CategoryRepository : ICategoryRepository
+    private readonly ShopDatabaseContext dbContext;
+
+    public CategoryRepository(ShopDatabaseContext dbContext)
     {
-        private readonly ShopDatabaseContext dbContext;
+        this.dbContext = dbContext;
+    }
 
-        public CategoryRepository(ShopDatabaseContext dbContext)
+
+    public async Task<List<Category>> GetAllAsync()
+    {
+        return await dbContext.Categories.ToListAsync();
+    }
+
+    public async Task<Category> FindAsync(int id)
+    {
+        return await dbContext.Categories.FindAsync(id);
+    }
+
+    public async Task<Category> FindByTitleAsync(string title)
+    {
+        return await dbContext.Categories.FirstOrDefaultAsync(c => c.Title == title);
+    }
+
+    public async Task AddAsync(Category category)
+    {
+        await dbContext.Categories.AddAsync(category);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Category category)
+    {
+        var dbCategory = await dbContext.Categories.FindAsync(category.Id);
+        if (dbCategory == null)
         {
-            this.dbContext = dbContext;
+            throw new NullReferenceException();
         }
 
+        dbCategory.Title = category.Title;
 
-        public async Task<List<Category>> GetAllAsync()
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var category = await dbContext.Categories.FindAsync(id);
+        if (category == null)
         {
-            return await dbContext.Categories.ToListAsync();
+            throw new NullReferenceException();
         }
 
-        public async Task<Category> FindAsync(int id)
-        {
-            return await dbContext.Categories.FindAsync(id);
-        }
+        dbContext.Remove(category);
 
-        public async Task<Category> FindByTitleAsync(string title)
-        {
-            return await dbContext.Categories.FirstOrDefaultAsync(c => c.Title == title);
-        }
-
-        public async Task AddAsync(Category category)
-        {
-            await dbContext.Categories.AddAsync(category);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(Category category)
-        {
-            var dbCategory = await dbContext.Categories.FindAsync(category.Id);
-            if (dbCategory == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            dbCategory.Title = category.Title;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var category = await dbContext.Categories.FindAsync(id);
-            if (category == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            dbContext.Remove(category);
-
-            await dbContext.SaveChangesAsync();
-        }
+        await dbContext.SaveChangesAsync();
     }
 }

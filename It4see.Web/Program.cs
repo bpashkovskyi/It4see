@@ -1,8 +1,10 @@
 
+using It4see.Application;
 using It4see.Persistence;
 using It4see.Persistence.Base;
 using It4see.Web.Mapping;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace It4see.Web;
@@ -22,6 +24,7 @@ public class Program
 
         builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
 
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommandHandler>());
 
         builder.Services.AddDbContext<ShopDatabaseContext>(options => options.UseSqlServer(
             builder.Configuration.GetConnectionString("ShopDatabase")));

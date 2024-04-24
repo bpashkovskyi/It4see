@@ -1,5 +1,8 @@
+using It4see.Application;
 using It4see.Domain;
 using It4see.Persistence.Base;
+
+using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,17 +12,17 @@ namespace It4see.Web.Controllers;
 [Route("[controller]")]
 public class CategoryController : ControllerBase
 {
-    private readonly ICategoryRepository categoryRepository;
+    private readonly IMediator mediator;
 
-    public CategoryController(ICategoryRepository categoryRepository)
+    public CategoryController(IMediator mediator)
     {
-        this.categoryRepository = categoryRepository;
+        this.mediator = mediator;
     }
 
     [HttpGet("list")]
     public async Task<IActionResult> Get()
     {
-        var categories = await this.categoryRepository.GetAllAsync();
+        var categories = await this.mediator.Send(new GetAllCategoriesQuery());
 
         return Ok(categories);
     }
@@ -51,7 +54,12 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(Category category)
     {
-        await this.categoryRepository.AddAsync(category);
+        var createCategoryCommand = new CreateCategoryCommand
+        {
+            Title = category.Title
+        };
+
+        await this.mediator.Send(createCategoryCommand);
 
         return Ok(category);
     }
@@ -59,7 +67,13 @@ public class CategoryController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put(Category category)
     {
-        await this.categoryRepository.UpdateAsync(category);
+        var updateCategoryCommand = new UpdateCategoryCommand()
+        {
+            Id = category.Id,
+            Title = category.Title
+        };
+
+        await this.mediator.Send(updateCategoryCommand);
 
         return Ok(category);
     }
