@@ -7,6 +7,7 @@ using It4see.Web.ViewModels.Product;
 
 using MediatR;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace It4see.Web.Controllers;
@@ -25,11 +26,12 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("list")]
+    [Authorize]
     public async Task<IActionResult> Get()
     {
-        var categories = await mediator.Send(new GetAllCategoriesQuery());
+        var products = await mediator.Send(new GetAllProductsQuery());
 
-        var productListViewModels = mapper.Map<List<ProductListViewModel>>(categories);
+        var productListViewModels = mapper.Map<List<ProductListViewModel>>(products);
 
         return Ok(productListViewModels);
     }
