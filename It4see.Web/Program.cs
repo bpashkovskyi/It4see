@@ -1,12 +1,11 @@
 using It4see.Application;
-using It4see.Application.Categories;
+using It4see.Application.SensorCategories;
 using It4see.Persistence;
 using It4see.Persistence.Base;
 using It4see.Persistence.Repositories;
 using It4see.Web.Mapping;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -18,6 +17,8 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Logging.AddConsole();
 
         builder.Services.AddAuthorization();
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -67,16 +68,19 @@ public class Program
                 });
         });
 
-        builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+        builder.Services.AddAutoMapper(typeof(SensorProfile).Assembly);
 
-        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCategoryCommandHandler>());
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateSensorCategoryCommandHandler>());
 
-        builder.Services.AddDbContext<ShopDatabaseContext>(options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("ShopDatabase")));
+        builder.Services.AddDbContext<SensorsDatabaseContext>(options => options.UseSqlServer(
+            builder.Configuration.GetConnectionString("SensorsDatabase")));
 
-        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<ISensorCategoryRepository, SensorCategoryRepository>();
+        builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 
+        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+        builder.Services.Configure<SmtpSettings>(smtpSettings => builder.Configuration.GetSection("SmtpSettings").Bind(smtpSettings));
 
         var app = builder.Build();
 
@@ -91,7 +95,6 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-
 
         app.MapControllers();
 

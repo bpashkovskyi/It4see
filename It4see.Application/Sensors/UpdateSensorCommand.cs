@@ -1,0 +1,16 @@
+﻿using It4see.Domain.Enums;
+
+using MediatR;
+
+namespace It4see.Application.Sensors;
+
+public class UpdateSensorCommand : IRequest
+{
+    public int Id { get; init; }
+
+    public string Name { get; init; }
+
+    public SensorType SensorType { get; init; }
+
+    public int SensorCategoryId { get; init; }
+}

@@ -11,7 +11,7 @@ namespace It4see.Application.Login;
 
 public class LogicCommandHandler : IRequestHandler<LoginCommand, string>
 {
-    private readonly List<Person> people =
+    private readonly List<Person> _people =
     [
         new Person("tom@gmail.com", "12345"),
         new Person("bob@gmail.com", "55555")
@@ -19,7 +19,7 @@ public class LogicCommandHandler : IRequestHandler<LoginCommand, string>
 
     public Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var person = people.FirstOrDefault(p => p.Email == request.Person.Email && p.Password == request.Person.Password);
+        var person = _people.FirstOrDefault(p => p.Email == request.Person.Email && p.Password == request.Person.Password);
 
         if (person is null)
         {
