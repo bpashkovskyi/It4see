@@ -1,5 +1,6 @@
 using AutoMapper;
 using It4see.Application.SensorCategories;
+using It4see.Domain;
 using It4see.Web.ViewModels.SensorCategory;
 using MediatR;
 
@@ -14,9 +15,9 @@ public class SensorCategoryController(IMediator mediator, IMapper mapper) : Cont
     [HttpGet("list")]
     public async Task<IActionResult> Get()
     {
-        var sensorCategories = await mediator.Send(new GetAllSensorCategoriesQuery());
+        List<SensorCategory> sensorCategories = await mediator.Send(new GetAllSensorCategoriesQuery());
 
-        var categoryListViewModels = mapper.Map<List<SensorCategoryListViewModel>>(sensorCategories);
+        List<SensorCategoryListViewModel> categoryListViewModels = mapper.Map<List<SensorCategoryListViewModel>>(sensorCategories);
 
         return Ok(categoryListViewModels);
     }
@@ -24,13 +25,18 @@ public class SensorCategoryController(IMediator mediator, IMapper mapper) : Cont
     [HttpGet]
     public async Task<IActionResult> GetById(int id)
     {
-        var sensorCategory = await mediator.Send(new GetSensorCategoryQuery { Id = id });
+        if (id == 2)
+        {
+            throw new InvalidCastException();
+        }
+
+        SensorCategory sensorCategory = await mediator.Send(new GetSensorCategoryQuery { Id = id });
         if (sensorCategory == null)
         {
             return NotFound();
         }
 
-        var categoryDetailsViewModel = mapper.Map<SensorCategoryDetailsViewModel>(sensorCategory);
+        SensorCategoryDetailsViewModel categoryDetailsViewModel = mapper.Map<SensorCategoryDetailsViewModel>(sensorCategory);
 
         return Ok(categoryDetailsViewModel);
     }
@@ -38,13 +44,13 @@ public class SensorCategoryController(IMediator mediator, IMapper mapper) : Cont
     [HttpGet("byTitle")]
     public async Task<IActionResult> GetByTitle(string title)
     {
-        var sensorCategory = await mediator.Send(new GetSensorCategoryByTitleQuery { Title = title });
+        SensorCategory sensorCategory = await mediator.Send(new GetSensorCategoryByTitleQuery { Title = title });
         if (sensorCategory == null)
         {
             return NotFound();
         }
 
-        var categoryDetailsViewModel = mapper.Map<SensorCategoryDetailsViewModel>(sensorCategory);
+        SensorCategoryDetailsViewModel categoryDetailsViewModel = mapper.Map<SensorCategoryDetailsViewModel>(sensorCategory);
         
         return Ok(categoryDetailsViewModel);
     }
@@ -52,7 +58,7 @@ public class SensorCategoryController(IMediator mediator, IMapper mapper) : Cont
     [HttpPost]
     public async Task<IActionResult> Post(SensorCategoryCreateViewModel sensorCategoryCreateViewModel)
     {
-        var createSensorCategoryCommand = mapper.Map<CreateSensorCategoryCommand>(sensorCategoryCreateViewModel);
+        CreateSensorCategoryCommand createSensorCategoryCommand = mapper.Map<CreateSensorCategoryCommand>(sensorCategoryCreateViewModel);
 
         await mediator.Send(createSensorCategoryCommand);
 
@@ -62,7 +68,7 @@ public class SensorCategoryController(IMediator mediator, IMapper mapper) : Cont
     [HttpPut]
     public async Task<IActionResult> Put(SensorCategoryUpdateViewModel sensorCategoryUpdateViewModel)
     {
-        var updateSensorCategoryCommand = mapper.Map<UpdateSensorCategoryCommand>(sensorCategoryUpdateViewModel);
+        UpdateSensorCategoryCommand updateSensorCategoryCommand = mapper.Map<UpdateSensorCategoryCommand>(sensorCategoryUpdateViewModel);
 
         await mediator.Send(updateSensorCategoryCommand);
 

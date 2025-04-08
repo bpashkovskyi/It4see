@@ -9,7 +9,7 @@ public class GetAllSensorsQueryHandler(ISensorRepository sensorRepository)
 {
     public async Task<List<Sensor>> Handle(GetAllSensorsQuery request, CancellationToken cancellationToken)
     {
-        var sensors = await sensorRepository.GetAllAsync();
+        List<Sensor> sensors = await sensorRepository.GetAllAsync();
 
         return sensors;
     }

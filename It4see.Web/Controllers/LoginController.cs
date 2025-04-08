@@ -32,12 +32,12 @@ public class LoginController(
         logger.LogDebug("Person with email {Email} logged to system", person.Email);
 
 
-        var loginCommand = new LoginCommand
+        LoginCommand loginCommand = new LoginCommand
         {
             Person = person
         };
 
-        var jwtToken = await mediator.Send(loginCommand);
+        string jwtToken = await mediator.Send(loginCommand);
         if (jwtToken == null)
         {
             return Unauthorized();

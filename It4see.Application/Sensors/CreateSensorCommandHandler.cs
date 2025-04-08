@@ -9,7 +9,7 @@ public class CreateSensorCommandHandler(ISensorRepository sensorRepository)
 {
     public async Task Handle(CreateSensorCommand request, CancellationToken cancellationToken)
     {
-        var sensor = new Sensor
+        Sensor sensor = new Sensor
         {
             Name = request.Name,
             SensorType = request.SensorType,

@@ -1,8 +1,6 @@
 ﻿namespace It4see.Web;
 
-public class ExceptionHandlingMiddleware(
-    RequestDelegate requestDelegate,
-    ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(RequestDelegate requestDelegate, ILogger<ExceptionHandlingMiddleware> logger)
 {
     public async Task Invoke(HttpContext httpContext)
     {
@@ -12,7 +10,7 @@ public class ExceptionHandlingMiddleware(
         }
         catch (Exception exception)
         {
-            var exceptionMessage = exception.Message;
+            string exceptionMessage = exception.Message;
 
             logger.LogError("Error Message: {exceptionMessage}, Time of occurrence {time}", exceptionMessage, DateTime.UtcNow);
 

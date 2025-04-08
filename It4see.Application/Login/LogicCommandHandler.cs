@@ -19,23 +19,23 @@ public class LogicCommandHandler : IRequestHandler<LoginCommand, string>
 
     public Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var person = _people.FirstOrDefault(p => p.Email == request.Person.Email && p.Password == request.Person.Password);
+        Person person = _people.FirstOrDefault(p => p.Email == request.Person.Email && p.Password == request.Person.Password);
 
         if (person is null)
         {
             return Task.FromResult((string)null);
         }
 
-        var claims = new List<Claim> { new(ClaimTypes.Name, person.Email) };
+        List<Claim> claims = new List<Claim> { new(ClaimTypes.Name, person.Email) };
 
-        var jwt = new JwtSecurityToken(
+        JwtSecurityToken jwt = new JwtSecurityToken(
             issuer: AuthOptions.Issuer,
             audience: AuthOptions.Audience,
             claims: claims,
             expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
             signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
-        var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+        string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
         return Task.FromResult(encodedJwt);
     }

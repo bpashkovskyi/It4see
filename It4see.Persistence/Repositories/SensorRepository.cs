@@ -8,7 +8,7 @@ public class SensorRepository(SensorsDatabaseContext dbContext) : ISensorReposit
 {
     public async Task<List<Sensor>> GetAllAsync()
     {
-        var sensors = await dbContext.Sensors
+        List<Sensor> sensors = await dbContext.Sensors
             .Include(sensor => sensor.SensorCategory)
             .ToListAsync();
 
@@ -17,7 +17,7 @@ public class SensorRepository(SensorsDatabaseContext dbContext) : ISensorReposit
 
     public async Task<Sensor> FindAsync(int id)
     {
-        var sensor = await dbContext.Sensors
+        Sensor sensor = await dbContext.Sensors
             .Include(sensor => sensor.SensorCategory)
             .FirstOrDefaultAsync(sensor => sensor.Id == id);
 
@@ -26,7 +26,7 @@ public class SensorRepository(SensorsDatabaseContext dbContext) : ISensorReposit
 
     public async Task<Sensor> FindByNameAsync(string name)
     {
-        var sensor = await dbContext.Sensors
+        Sensor sensor = await dbContext.Sensors
             .Include(sensor => sensor.SensorCategory)
             .FirstOrDefaultAsync(sensor => sensor.Name == name);
 
@@ -41,7 +41,7 @@ public class SensorRepository(SensorsDatabaseContext dbContext) : ISensorReposit
 
     public async Task UpdateAsync(Sensor sensor)
     {
-        var dbSensor = await dbContext.Sensors.FindAsync(sensor.Id);
+        Sensor dbSensor = await dbContext.Sensors.FindAsync(sensor.Id);
         if (dbSensor == null)
         {
             throw new NullReferenceException();
@@ -56,7 +56,7 @@ public class SensorRepository(SensorsDatabaseContext dbContext) : ISensorReposit
 
     public async Task DeleteAsync(int id)
     {
-        var sensor = await dbContext.Sensors.FindAsync(id);
+        Sensor sensor = await dbContext.Sensors.FindAsync(id);
         if (sensor == null)
         {
             throw new NullReferenceException();

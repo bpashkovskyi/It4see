@@ -29,7 +29,7 @@ public class SensorCategoryRepository(SensorsDatabaseContext dbContext) : ISenso
 
     public async Task UpdateAsync(SensorCategory sensorCategory)
     {
-        var dbSensorCategory = await dbContext.SensorCategories.FindAsync(sensorCategory.Id);
+        SensorCategory dbSensorCategory = await dbContext.SensorCategories.FindAsync(sensorCategory.Id);
         if (dbSensorCategory == null)
         {
             throw new NullReferenceException();
@@ -42,7 +42,7 @@ public class SensorCategoryRepository(SensorsDatabaseContext dbContext) : ISenso
 
     public async Task DeleteAsync(int id)
     {
-        var sensorCategory = await dbContext.SensorCategories.FindAsync(id);
+        SensorCategory sensorCategory = await dbContext.SensorCategories.FindAsync(id);
         if (sensorCategory == null)
         {
             throw new NullReferenceException();

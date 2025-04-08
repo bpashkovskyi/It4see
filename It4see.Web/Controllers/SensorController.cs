@@ -15,9 +15,9 @@ public class SensorController(IMediator mediator, IMapper mapper) : ControllerBa
     [HttpGet("list")]
     public async Task<IActionResult> Get()
     {
-        var sensors = await mediator.Send(new GetAllSensorsQuery());
+        List<Sensor> sensors = await mediator.Send(new GetAllSensorsQuery());
 
-        var sensorsListViewModels = mapper.Map<List<SensorListViewModel>>(sensors);
+        List<SensorListViewModel> sensorsListViewModels = mapper.Map<List<SensorListViewModel>>(sensors);
 
         return Ok(sensorsListViewModels);
     }
@@ -25,13 +25,13 @@ public class SensorController(IMediator mediator, IMapper mapper) : ControllerBa
     [HttpGet]
     public async Task<IActionResult> GetById(int id)
     {
-        var sensor = await mediator.Send(new GetSensorQuery { Id = id });
+        Sensor sensor = await mediator.Send(new GetSensorQuery { Id = id });
         if (sensor == null)
         {
             return NotFound();
         }
 
-        var sensorDetailsViewModel = mapper.Map<SensorDetailsViewModel>(sensor);
+        SensorDetailsViewModel sensorDetailsViewModel = mapper.Map<SensorDetailsViewModel>(sensor);
 
         return Ok(sensorDetailsViewModel);
     }
@@ -39,13 +39,13 @@ public class SensorController(IMediator mediator, IMapper mapper) : ControllerBa
     [HttpGet("byName")]
     public async Task<IActionResult> GetByName(string name)
     {
-        var sensor = await mediator.Send(new GetSensorByNameQuery { Name = name });
+        Sensor sensor = await mediator.Send(new GetSensorByNameQuery { Name = name });
         if (sensor == null)
         {
             return NotFound();
         }
 
-        var sensorsDetailsViewModel = mapper.Map<SensorDetailsViewModel>(sensor);
+        SensorDetailsViewModel sensorsDetailsViewModel = mapper.Map<SensorDetailsViewModel>(sensor);
         
         return Ok(sensorsDetailsViewModel);
     }
@@ -53,7 +53,7 @@ public class SensorController(IMediator mediator, IMapper mapper) : ControllerBa
     [HttpPost]
     public async Task<IActionResult> Post(SensorCreateViewModel sensorCreateViewModel)
     {
-        var createSensorCommand = mapper.Map<CreateSensorCommand>(sensorCreateViewModel);
+        CreateSensorCommand createSensorCommand = mapper.Map<CreateSensorCommand>(sensorCreateViewModel);
 
         await mediator.Send(createSensorCommand);
 
@@ -63,7 +63,7 @@ public class SensorController(IMediator mediator, IMapper mapper) : ControllerBa
     [HttpPut]
     public async Task<IActionResult> Put(SensorUpdateViewModel sensorUpdateViewModel)
     {
-        var updateSensorCommand = mapper.Map<UpdateSensorCommand>(sensorUpdateViewModel);
+        UpdateSensorCommand updateSensorCommand = mapper.Map<UpdateSensorCommand>(sensorUpdateViewModel);
 
         await mediator.Send(updateSensorCommand);
 
