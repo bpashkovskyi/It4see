@@ -22,5 +22,8 @@ public class SensorsDatabaseContext : DbContext
             .HasMany(sensorCategory => sensorCategory.Sensors)
             .WithOne(sensor => sensor.SensorCategory)
             .HasForeignKey(sensor => sensor.SensorCategoryId);
+
+        modelBuilder.Entity<SensorCategory>()
+            .HasIndex(sensorCategory => sensorCategory.Title).IsUnique();
     }
 }

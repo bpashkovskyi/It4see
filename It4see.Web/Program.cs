@@ -1,3 +1,5 @@
+using System.Text;
+
 using It4see.Application;
 using It4see.Application.SensorCategories;
 using It4see.Persistence;
@@ -20,23 +22,7 @@ public class Program
 
         builder.Logging.AddConsole();
 
-        builder.Services.AddAuthorization();
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = AuthOptions.Issuer,
-                ValidateAudience = true,
-                ValidAudience = AuthOptions.Audience,
-                ValidateLifetime = true,
-                IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                ValidateIssuerSigningKey = true,
-            };
-        });
-
         // Add services to the container.
-
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -82,6 +68,30 @@ public class Program
 
         builder.Services.Configure<SmtpSettings>(smtpSettings => builder.Configuration.GetSection("SmtpSettings").Bind(smtpSettings));
 
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"];
+
+        builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+                };
+            });
+
+        builder.Services.AddAuthorization();
+
         WebApplication app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -91,10 +101,9 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        ////app.UseMiddleware<ExceptionHandlingMiddleware>();
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseHttpsRedirection();
-        app.UseExceptionHandler(_ => { });
 
         app.UseAuthentication();
         app.UseAuthorization();

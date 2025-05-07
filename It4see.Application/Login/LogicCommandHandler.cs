@@ -1,42 +1,46 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
+using System.Text;
 using It4see.Domain;
 
 using MediatR;
-
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace It4see.Application.Login;
 
 public class LogicCommandHandler : IRequestHandler<LoginCommand, string>
 {
-    private readonly List<Person> _people =
-    [
-        new Person("tom@gmail.com", "12345"),
-        new Person("bob@gmail.com", "55555")
-    ];
+    private IConfiguration configuration;
 
+    public LogicCommandHandler(IConfiguration configuration)
+    {
+        this.configuration = configuration;
+    }
+
+    // Ideally we have to check if user exists in db and check password
+    // But here it is skipped for simplisity
     public Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        Person person = _people.FirstOrDefault(p => p.Email == request.Person.Email && p.Password == request.Person.Password);
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"];
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
 
-        if (person is null)
+        var claims = new[]
         {
-            return Task.FromResult((string)null);
-        }
+            new Claim(JwtRegisteredClaimNames.Sub, request.UserId),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, "User")
+        };
 
-        List<Claim> claims = new List<Claim> { new(ClaimTypes.Name, person.Email) };
-
-        JwtSecurityToken jwt = new JwtSecurityToken(
-            issuer: AuthOptions.Issuer,
-            audience: AuthOptions.Audience,
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
-            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            expires: DateTime.UtcNow.AddHours(1),
+            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+        );
 
-        string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-        return Task.FromResult(encodedJwt);
+        return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 }

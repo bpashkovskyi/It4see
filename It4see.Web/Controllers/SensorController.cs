@@ -4,6 +4,7 @@ using It4see.Domain;
 using It4see.Web.ViewModels.Sensor;
 using MediatR;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace It4see.Web.Controllers;
@@ -13,6 +14,7 @@ namespace It4see.Web.Controllers;
 public class SensorController(IMediator mediator, IMapper mapper) : ControllerBase
 {
     [HttpGet("list")]
+    [Authorize]
     public async Task<IActionResult> Get()
     {
         List<Sensor> sensors = await mediator.Send(new GetAllSensorsQuery());

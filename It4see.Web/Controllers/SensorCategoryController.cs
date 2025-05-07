@@ -4,11 +4,13 @@ using It4see.Domain;
 using It4see.Web.ViewModels.SensorCategory;
 using MediatR;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace It4see.Web.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class SensorCategoryController(IMediator mediator, IMapper mapper) : ControllerBase
 {

@@ -6,5 +6,5 @@ namespace It4see.Application.Login;
 
 public class LoginCommand : IRequest<string>
 {
-    public Person Person { get; set; }
+    public string UserId { get; set; }
 }
